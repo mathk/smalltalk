@@ -132,4 +132,10 @@ extern void _gst_pause (void);
 /* Wake up from a pause.  */
 extern void _gst_wakeup (void);
 
+void _gst_init_event_loop();
+void _gst_dispatch_events (void);
+void _gst_idle (mst_Boolean blocking);
+mst_Boolean _gst_set_event_loop_handlers(mst_Boolean (*poll) (int ms),
+                                         void (*dispatch) (void));
+
 #endif /* GST_EVENTS_H */

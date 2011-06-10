@@ -305,8 +305,15 @@ gst_initModule (proxy)
   gchar **argv = argvArray;
 
   initialized = gtk_init_check (&argc, &argv);
+#if 0
+  /* Disabled for now, as we would need to wrap the event dispatch call
+     with gdk_threads_leave (before) and gdk_threads_enter (after).  */
   if (initialized)
-    gdk_threads_init ();
+    {
+      gdk_threads_init ();
+      gdk_threads_enter ();
+    }
+#endif
 
   _gtk_vm_proxy = proxy;
   _gtk_vm_proxy->defineCFunc ("gstGtkConnectAccelGroup", connect_accel_group);

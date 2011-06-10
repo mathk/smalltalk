@@ -64,6 +64,232 @@ async_queue_entry _gst_sem_int_vec[NSIG];
 static RETSIGTYPE signal_handler (int sig);
 
 
+enum event_loop_state {
+    STATE_POLLING,
+    STATE_RUNNING,
+    STATE_DISPATCHING,
+    STATE_IDLE
+};
+#ifdef _WIN32
+#include <windows.h>
+
+static CRITICAL_SECTION state_cs;
+static HANDLE state_event;
+#else
+#include <pthread.h>
+#define INFINITE (-1)
+
+static pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t state_cond = PTHREAD_COND_INITIALIZER;
+#endif
+
+static enum event_loop_state cur_state = STATE_RUNNING;
+static mst_Boolean (*event_poll) (int);
+static void (*event_dispatch) (void);
+static int have_event_loop_handlers = false;
+static int64_t next_poll_ms;
+
+static void event_loop_lock(void);
+static void event_loop_unlock(void);
+static void set_event_loop_state (enum event_loop_state state);
+static void poll_events (OOP blockingOOP);
+
+
+static void
+event_loop_lock(void)
+{
+#ifdef _WIN32
+  EnterCriticalSection (&state_cs);
+#else
+  pthread_mutex_lock (&state_mutex);
+#endif
+}
+
+static void
+event_loop_unlock(void)
+{
+#ifdef _WIN32
+  LeaveCriticalSection (&state_cs);
+#else
+  pthread_mutex_unlock (&state_mutex);
+#endif
+}
+
+static void
+set_event_loop_state (enum event_loop_state state)
+{
+  enum event_loop_state old_state;
+  old_state = cur_state;
+  if (old_state == state)
+    return;
+
+  cur_state = state;
+
+#ifdef _WIN32
+  if (have_event_loop_handlers)
+    {
+      if (state == STATE_RUNNING && old_state != STATE_RUNNING)
+        SetEvent(state_event);
+      else if (state != STATE_RUNNING && old_state == STATE_RUNNING)
+        ResetEvent(state_event);
+    }
+#endif
+
+  switch (state)
+    {
+    case STATE_POLLING:
+      event_loop_unlock ();
+      _gst_async_call (poll_events, _gst_nil_oop);
+      event_loop_lock ();
+      break;
+
+#ifndef _WIN32
+    case STATE_RUNNING:
+      if (have_event_loop_handlers)
+        pthread_cond_signal (&state_cond);
+      break;
+#endif
+    }
+}
+
+static
+#ifdef _WIN32
+unsigned __stdcall
+#else
+void *
+#endif
+poll_timer_thread (void *unused)
+{
+  event_loop_lock ();
+  for (;;)
+    {
+      int ms;
+      if (cur_state == STATE_RUNNING)
+        {
+          ms = MIN(0, next_poll_ms - _gst_get_milli_time ());
+          if (ms == 0)
+            {
+              next_poll_ms = _gst_get_milli_time () + 20;
+              set_event_loop_state(STATE_POLLING);
+              continue;
+            }
+        }
+      else
+        ms = INFINITE;
+
+#ifdef _WIN32
+      event_loop_unlock ();
+      WaitForSingleObject (state_event, ms);
+      event_loop_lock ();
+#else
+      if (ms == INFINITE)
+        pthread_cond_wait (&state_cond, &state_mutex);
+      else if (ms)
+        {
+          event_loop_unlock ();
+          _gst_usleep (ms * 1000);
+          event_loop_lock ();
+        }
+#endif
+    }
+
+  return 0;
+}
+
+static void
+poll_events (OOP blockingOOP)
+{
+  int ms;
+  gst_processor_scheduler processor;
+  if (blockingOOP == _gst_nil_oop)
+    ms = 0;
+  else if (blockingOOP == _gst_true_oop)
+    ms = -1;
+  else
+    ms = MIN(0, next_poll_ms - _gst_get_milli_time ());
+
+  if (event_poll && event_poll (ms))
+    {
+      processor = (gst_processor_scheduler) OOP_TO_OBJ (_gst_processor_oop);
+      if (TO_INT (processor->objSize)
+          > offsetof (struct gst_processor_scheduler, eventSemaphore) / sizeof(OOP))
+        {
+          event_loop_lock ();
+          set_event_loop_state (STATE_DISPATCHING);
+          event_loop_unlock ();
+          processor = (gst_processor_scheduler) OOP_TO_OBJ (_gst_processor_oop);
+          _gst_sync_signal (processor->eventSemaphore, true);
+        }
+    }
+
+  event_loop_lock ();
+  if (cur_state == STATE_POLLING)
+    set_event_loop_state (STATE_RUNNING);
+  event_loop_unlock ();
+}
+
+void
+_gst_dispatch_events (void)
+{
+  if (event_dispatch)
+    event_dispatch ();
+
+  event_loop_lock ();
+  set_event_loop_state (STATE_RUNNING);
+  event_loop_unlock ();
+}
+
+void
+_gst_idle (mst_Boolean blocking)
+{
+  event_loop_lock ();
+  set_event_loop_state (STATE_IDLE);
+  event_loop_unlock ();
+
+  if (have_event_loop_handlers)
+    poll_events (blocking ? _gst_true_oop : _gst_false_oop);
+  else if (blocking)
+    _gst_pause ();
+  else
+    _gst_usleep (20000);
+}
+
+mst_Boolean
+_gst_set_event_loop_handlers(mst_Boolean (*poll) (int ms),
+                             void (*dispatch) (void))
+{
+  if (!have_event_loop_handlers)
+    {
+#ifdef _WIN32
+      HANDLE hThread;
+      hThread = (HANDLE) _beginthreadex(NULL, 0, poll_timer_thread,
+                                        NULL, 0, NULL);
+      CloseThread (hThread);
+#else
+      pthread_attr_t attr;
+      pthread_t thread;
+      pthread_attr_init(&attr);
+      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+      pthread_create(&thread, &attr, poll_timer_thread, NULL);
+#endif
+      have_event_loop_handlers = true;
+      event_poll = poll;
+      event_dispatch = dispatch;
+      return true;
+    }
+  else
+    return false;
+}
+
+void
+_gst_init_event_loop()
+{
+#ifdef _WIN32
+  InitializeCriticalSection(&state_cs);
+  state_event = CreateEvent(NULL, TRUE, TRUE, NULL);
+#endif
+}
+
 RETSIGTYPE
 signal_handler (int sig)
 {
@@ -98,4 +324,5 @@ _gst_async_interrupt_wait (OOP semaphoreOOP,
   /* should probably package up the old interrupt state here for return
      so that it can be undone */
 }
+
 
