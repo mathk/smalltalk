@@ -319,10 +319,7 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
 AC_HEADER_ASSERT
-AC_CHECK_HEADERS_ONCE(stdint.h inttypes.h unistd.h poll.h sys/ioctl.h \
-	sys/resource.h sys/utsname.h stropts.h sys/param.h stddef.h limits.h \
-	sys/timeb.h termios.h sys/mman.h sys/file.h execinfo.h utime.h \
-	sys/select.h sys/wait.h fcntl.h, [], [], [AC_INCLUDES_DEFAULT])
+AC_CHECK_HEADERS_ONCE(stdint.h inttypes.h unistd.h poll.h sys/ioctl.h sys/resource.h sys/utsname.h stropts.h sys/param.h stddef.h limits.h sys/timeb.h termios.h sys/mman.h sys/file.h execinfo.h utime.h sys/select.h sys/wait.h fcntl.h, [], [], [AC_INCLUDES_DEFAULT])
 
 AC_CHECK_MEMBERS([struct stat.st_mtim.tv_nsec, struct stat.st_mtimensec,
 		  struct stat.st_mtimespec.tv_nsec])
@@ -351,15 +348,8 @@ AC_CHECK_LIB(m, atan)
 GST_REPLACE_POLL
 gt_FUNC_SETENV
 GST_SOCKETS
-AC_REPLACE_FUNCS(putenv strdup strerror strsignal mkstemp getpagesize \
-	getdtablesize strstr ftruncate floorl ceill sqrtl frexpl ldexpl asinl \
-	acosl atanl logl expl tanl sinl cosl powl truncl lrintl truncf lrintf \
-        lrint trunc strsep strpbrk symlink mkdtemp)
-AC_CHECK_FUNCS_ONCE(gethostname memcpy memmove sighold uname usleep lstat \
-	grantpt popen getrusage gettimeofday fork strchr utimes utime readlink \
-	sigsetmask alarm select mprotect madvise waitpid accept4 \
-	setsid spawnl pread pwrite _NSGetExecutablePath \
-	chown getgrnam getpwnam endgrent endpwent setgroupent setpassent)
+AC_REPLACE_FUNCS(putenv strdup strerror strsignal mkstemp getpagesize getdtablesize strstr ftruncate floorl ceill sqrtl frexpl ldexpl asinl acosl atanl logl expl tanl sinl cosl powl truncl lrintl truncf lrintf lrint trunc strsep strpbrk symlink mkdtemp)
+AC_CHECK_FUNCS_ONCE(gethostname memcpy memmove sighold uname usleep lstat grantpt popen getrusage gettimeofday fork strchr utimes utime readlink sigsetmask alarm select mprotect madvise waitpid accept4 setsid spawnl pread pwrite _NSGetExecutablePath chown getgrnam getpwnam endgrent endpwent setgroupent setpassent)
 
 AC_SEARCH_LIBS([nanosleep], [rt])
 if test "$ac_cv_search_nanosleep" != no; then
