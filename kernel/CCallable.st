@@ -52,7 +52,7 @@ to perform the actual call-out to C routines.'>
 	        #string #smalltalk #int #uInt #longDouble #unknown #stringOut
 	        #symbol #byteArray #byteArrayOut #boolean #void #variadic
 	        #variadicSmalltalk #cObject #cObjectPtr #self #selfSmalltalk
-	        #wchar #wstring #wstringOut #symbolOut).
+	        #wchar #wstring #wstringOut #symbolOut #longLong #uLongLong).
 
 	    dict := LookupTable new.
 	    reverse keysAndValuesDo: [ :k :v |

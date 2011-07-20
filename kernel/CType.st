@@ -64,6 +64,8 @@ elements.'>
 	Smalltalk at: #CUShortType put: (CScalarCType cObjectType: CUShort).
 	Smalltalk at: #CLongType put: (CScalarCType cObjectType: CLong).
 	Smalltalk at: #CULongType put: (CScalarCType cObjectType: CULong).
+	Smalltalk at: #CLongLongType put: (CScalarCType cObjectType: CLongLong).
+	Smalltalk at: #CULongLongType put: (CScalarCType cObjectType: CULongLong).
 	Smalltalk at: #CIntType put: (CScalarCType cObjectType: CInt).
 	Smalltalk at: #CUIntType put: (CScalarCType cObjectType: CUInt).
 	Smalltalk at: #CSmalltalkType put: (CScalarCType cObjectType: CSmalltalk).
@@ -76,6 +78,8 @@ elements.'>
 	TypeMap := (IdentityDictionary new)
 		    at: #long put: CLongType;
 		    at: #uLong put: CULongType;
+		    at: #longLong put: CLongLongType;
+		    at: #uLongLong put: CULongLongType;
 		    at: #byte put: CByteType;
 		    at: #char put: CCharType;
 		    at: #uChar put: CUCharType;
