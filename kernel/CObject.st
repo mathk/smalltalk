@@ -613,6 +613,103 @@ CScalar subclass: CSmalltalk [
     ]
 ]
 
+
+CScalar subclass: CLongLong [
+
+    <category: 'Language-C interface'>
+    <comment: nil>
+
+    CLongLong class >> sizeof [
+	"Answer the receiver's instances size"
+
+	<category: 'accessing'>
+	^CLongLongSize
+    ]
+
+    CLongLong class >> alignof [
+	"Answer the receiver's instances required aligment"
+
+	<category: 'accessing'>
+	^CLongLongSize
+    ]
+
+    CLongLong class >> cObjStoredType [
+	"Private - Answer an index referring to the receiver's instances scalar type"
+
+	<category: 'accessing'>
+	^30
+    ]
+
+    sizeof [
+	"Answer the receiver's size"
+
+	<category: 'accessing'>
+	^CLongLongSize
+    ]
+
+    alignof [
+	"Answer the receiver's required aligment"
+
+	<category: 'accessing'>
+	^CLongLongSize
+    ]
+
+    cObjStoredType [
+	"Private - Answer an index referring to the receiver's scalar type"
+
+	<category: 'accessing'>
+	^30
+    ]						  		
+]
+
+
+CScalar subclass: CULongLong [
+
+    <category: 'Language-C interface'>
+    <comment: nil>
+
+    CULongLong class >> sizeof [
+	"Answer the receiver's instances size"
+
+	<category: 'accessing'>
+	^CULongLongSize
+    ]
+
+    CULongLong class >> alignof [
+	"Answer the receiver's instances required aligment"
+
+	<category: 'accessing'>
+	^CULongLongSize
+    ]
+
+    CULongLong class >> cObjStoredType [
+	"Private - Answer an index referring to the receiver's instances scalar type"
+
+	<category: 'accessing'>
+	^31
+    ]
+
+    sizeof [
+	"Answer the receiver's size"
+
+	<category: 'accessing'>
+	^CULongLongSize
+    ]
+
+    alignof [
+	"Answer the receiver's required aligment"
+
+	<category: 'accessing'>
+	^CULongLongSize
+    ]
+
+    cObjStoredType [
+	"Private - Answer an index referring to the receiver's scalar type"
+
+	<category: 'accessing'>
+	^31
+    ]						  		
+]
 
 CScalar subclass: CLongLong [
 
