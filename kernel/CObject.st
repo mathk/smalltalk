@@ -672,14 +672,14 @@ CScalar subclass: CULongLong [
 	"Answer the receiver's instances size"
 
 	<category: 'accessing'>
-	^CLongLongSize
+	^CULongLongSize
     ]
 
     CULongLong class >> alignof [
 	"Answer the receiver's instances required aligment"
 
 	<category: 'accessing'>
-	^CLongLongSize
+	^CULongLongSize
     ]
 
     CULongLong class >> cObjStoredType [
@@ -693,14 +693,14 @@ CScalar subclass: CULongLong [
 	"Answer the receiver's size"
 
 	<category: 'accessing'>
-	^CLongLongSize
+	^CULongLongSize
     ]
 
     alignof [
 	"Answer the receiver's required aligment"
 
 	<category: 'accessing'>
-	^CLongLongSize
+	^CULongLongSize
     ]
 
     cObjStoredType [
