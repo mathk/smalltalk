@@ -120,7 +120,7 @@ Object extend [
         <cCall: 'testCObjectPtr' returning: #void args: #(#cObjectPtr)>
     ]
 
-    testLongLong: aLong [
+    testLongLongL aLong [
          <cCall: 'testLongLong' returning: #void args: #(#longLong)>
     ]
 ]
