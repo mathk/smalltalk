@@ -1141,6 +1141,8 @@ init_c_symbols ()
 		    FROM_INT (sizeof (double)));
   NAMESPACE_AT_PUT (cSymbolsOOP, _gst_intern_string ("CLongDoubleSize"),
 		    FROM_INT (sizeof (long double)));
+  NAMESPACE_AT_PUT (cSymbolsOOP, _gst_intern_string ("CLongLongSize"),
+		    FROM_INT (sizeof (long long)));
   NAMESPACE_AT_PUT (cSymbolsOOP, _gst_intern_string ("CPtrSize"),
 		    FROM_INT (sizeof (PTR)));
 
