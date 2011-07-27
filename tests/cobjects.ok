@@ -96,11 +96,11 @@ result = 7.700000
 returned value is true
 
 Execution begins...
-Getting a long 0x100110012002
+The string is this is a test
 returned value is nil
 
 Execution begins...
-The string is this is a test
+Getting a long 0x100110012002
 returned value is nil
 
 Execution begins...
