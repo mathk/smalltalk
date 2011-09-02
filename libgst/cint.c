@@ -1071,10 +1071,10 @@ smalltalk_to_c (OOP oop,
     {
       switch (cType)
         {
-	case CDATA_LONGLONG:
-	case CDATA_ULONGLONG:
-	  cp->u.longLongVal = to_c_int_64 (oop);
-	  return &ffi_type_sint64;
+       case CDATA_LONGLONG:
+       case CDATA_ULONGLONG:
+         cp->u.longLongVal = to_c_int_64 (oop);
+         return &ffi_type_sint64;
         case CDATA_LONG:
        case CDATA_ULONG:
          cp->u.longVal = TO_C_LONG (oop);
@@ -1122,10 +1122,10 @@ smalltalk_to_c (OOP oop,
     {
       switch (cType)
         {
-	case CDATA_LONGLONG:
-	case CDATA_ULONGLONG:
-	  cp->u.longLongVal = (long long)(oop == _gst_true_oop);
-	  return &ffi_type_sint64;
+       case CDATA_LONGLONG:
+       case CDATA_ULONGLONG:
+         cp->u.longLongVal = (long long)(oop == _gst_true_oop);
+         return &ffi_type_sint64;
         case CDATA_LONG:
        case CDATA_ULONG:
          cp->u.longVal = (oop == _gst_true_oop);

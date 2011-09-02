@@ -49,10 +49,10 @@ to perform the actual call-out to C routines.'>
 	<category: 'private - accessing'>
 	^##(| reverse dict |
 	    reverse := #(#char #uChar #short #uShort #long #uLong #float #double
-	        #string #smalltalk #int #uInt #longDouble #unknown #stringOut
-	        #symbol #byteArray #byteArrayOut #boolean #void #variadic
-	        #variadicSmalltalk #cObject #cObjectPtr #self #selfSmalltalk
-	        #wchar #wstring #wstringOut #symbolOut #longLong #uLongLong).
+               #string #smalltalk #int #uInt #longDouble #unknown #stringOut
+               #symbol #byteArray #byteArrayOut #boolean #void #variadic
+               #variadicSmalltalk #cObject #cObjectPtr #self #selfSmalltalk
+               #wchar #wstring #wstringOut #symbolOut #longLong #uLongLong).
 
            dict := LookupTable new.
            reverse keysAndValuesDo: [ :k :v |
