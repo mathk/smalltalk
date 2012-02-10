@@ -110,6 +110,11 @@
 #include "sigsegv.h"
 #endif
 
+#ifdef __APPLE__
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+#endif
+
 #include "gst.h"
 
 /* Convenience macros to test the versions of GCC.  Note - they won't

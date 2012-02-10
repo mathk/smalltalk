@@ -206,6 +206,7 @@
   <file>Getopt.st</file>
   <file>Regex.st</file>
   <file>StreamOps.st</file>
+  <file>MessageLookup.st</file>
 </disabled-package>
 
 <disabled-package>
